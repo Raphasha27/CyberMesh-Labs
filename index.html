@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberMesh SOC Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { background-color: #050505; color: #d4d4d4; font-family: 'JetBrains Mono', monospace; overflow: hidden; }
+        .glass { background: rgba(10, 10, 10, 0.7); border: 1px solid rgba(0, 255, 204, 0.3); box-shadow: inset 0 0 15px rgba(0, 255, 204, 0.05); }
+        .neon-text { text-shadow: 0 0 8px rgba(0, 255, 204, 0.8); }
+        .neon-border { border: 1px solid #00ffcc; box-shadow: 0 0 10px rgba(0, 255, 204, 0.5); }
+        .alert-text { color: #ff3366; text-shadow: 0 0 8px rgba(255, 51, 102, 0.8); }
+        
+        /* Scanline effect */
+        .scanlines::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+            z-index: 50;
+            background-size: 100% 2px, 3px 100%;
+            pointer-events: none;
+        }
+        
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: #000; }
+        ::-webkit-scrollbar-thumb { background: #00ffcc; }
+    </style>
+</head>
+<body class="h-screen w-screen p-4 flex flex-col scanlines">
+    <div id="root" class="h-full w-full flex flex-col z-10 relative"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        const generateIP = () => Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
+        
+        const ThreatLog = () => {
+            const [logs, setLogs] = useState([]);
+            
+            useEffect(() => {
+                const types = ["DDoS Signature", "SQLi Attempt", "Unauthorized Auth", "Malware Payload", "Port Scan"];
+                const severities = ["LOW", "MEDIUM", "HIGH", "CRITICAL"];
+                
+                const interval = setInterval(() => {
+                    const newLog = {
+                        id: Math.random().toString(36).substr(2, 9),
+                        timestamp: new Date().toISOString().split('T')[1].split('.')[0],
+                        ip: generateIP(),
+                        type: types[Math.floor(Math.random() * types.length)],
+                        severity: severities[Math.floor(Math.random() * severities.length)]
+                    };
+                    
+                    setLogs(prev => [newLog, ...prev].slice(0, 50));
+                }, 800);
+                
+                return () => clearInterval(interval);
+            }, []);
+
+            return (
+                <div className="flex flex-col h-full">
+                    <h3 className="text-[#00ffcc] font-bold mb-3 border-b border-[#00ffcc]/30 pb-2 flex justify-between">
+                        <span>LIVE THREAT TELEMETRY</span>
+                        <span className="animate-pulse text-xs text-green-400 block mt-1">? INTERCEPTING</span>
+                    </h3>
+                    <div className="flex-grow overflow-y-auto pr-2 text-xs font-mono space-y-1">
+                        {logs.map((log) => (
+                            <div key={log.id} className="grid grid-cols-4 gap-2 py-1 border-b border-gray-800 hover:bg-[#00ffcc]/10 transition-colors">
+                                <span className="text-gray-500">{log.timestamp}</span>
+                                <span className="text-gray-300">{log.ip}</span>
+                                <span className="text-gray-400 truncate">{log.type}</span>
+                                <span className={	ext-right font-bold  + (log.severity === 'CRITICAL' || log.severity === 'HIGH' ? 'alert-text' : 'text-yellow-400')}>
+                                    {log.severity}
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            );
+        };
+
+        const RadarChart = () => {
+            const chartRef = useRef(null);
+            
+            useEffect(() => {
+                const ctx = chartRef.current.getContext('2d');
+                const chart = new Chart(ctx, {
+                    type: 'radar',
+                    data: {
+                        labels: ['DDoS', 'Malware', 'Phishing', 'Insider Threat', 'Zero-Day', 'Botnet'],
+                        datasets: [{
+                            label: 'Global Threat Vector Activity',
+                            data: [65, 59, 90, 45, 30, 85],
+                            backgroundColor: 'rgba(0, 255, 204, 0.2)',
+                            borderColor: '#00ffcc',
+                            pointBackgroundColor: '#fff',
+                            pointBorderColor: '#00ffcc',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            r: {
+                                angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+                                grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                                pointLabels: { color: '#00ffcc', font: { family: 'JetBrains Mono' } },
+                                ticks: { display: false }
+                            }
+                        },
+                        plugins: { legend: { display: false } }
+                    }
+                });
+                
+                const interval = setInterval(() => {
+                    chart.data.datasets[0].data = Array.from({length: 6}, () => Math.floor(Math.random() * 100));
+                    chart.update();
+                }, 3000);
+                
+                return () => clearInterval(interval);
+            }, []);
+            
+            return (
+                <div className="h-full w-full relative p-4 flex flex-col">
+                    <h3 className="text-[#00ffcc] font-bold border-b border-[#00ffcc]/30 pb-2 mb-2">VECTOR ANALYSIS</h3>
+                    <div className="flex-grow relative">
+                        <canvas ref={chartRef}></canvas>
+                    </div>
+                </div>
+            );
+        };
+
+        const MetricsPanel = () => {
+            return (
+                <div className="grid grid-cols-2 gap-4 h-full content-start">
+                    <div className="glass p-4 rounded flex flex-col items-center justify-center">
+                        <span className="text-gray-400 text-xs mb-1">PACKETS INSPECTED</span>
+                        <span className="text-2xl text-[#00ffcc] font-bold">1.42B</span>
+                    </div>
+                    <div className="glass p-4 rounded flex flex-col items-center justify-center border-l-2 border-l-[#ff3366]">
+                        <span className="text-gray-400 text-xs mb-1">PAYLOADS BLOCKED</span>
+                        <span className="text-2xl alert-text font-bold">84,932</span>
+                    </div>
+                    <div className="glass p-4 rounded flex flex-col items-center justify-center col-span-2">
+                        <span className="text-gray-400 text-xs mb-1">SYSTEM INTEGRITY</span>
+                        <span className="text-3xl text-green-400 font-bold tracking-widest neon-text">SECURE</span>
+                    </div>
+                    <button className="col-span-2 mt-4 bg-[#00ffcc]/10 border border-[#00ffcc] text-[#00ffcc] py-2 rounded hover:bg-[#00ffcc] hover:text-black transition-colors font-bold tracking-wider">
+                        INITIATE COUNTERMEASURE
+                    </button>
+                </div>
+            );
+        };
+
+        const App = () => {
+            return (
+                <div className="flex flex-col h-full max-w-[1400px] mx-auto w-full">
+                    <header className="flex justify-between items-end mb-4 border-b-2 border-[#00ffcc] pb-2 shrink-0">
+                        <div>
+                            <h1 className="text-3xl font-bold text-[#00ffcc] tracking-tighter neon-text">CYBERMESH_LABS</h1>
+                            <p className="text-xs text-gray-400 tracking-widest">AUTONOMOUS SECURITY OPERATIONS CENTER // K-DYNAMICS</p>
+                        </div>
+                        <div className="text-right">
+                            <span className="px-2 py-1 text-[10px] bg-[#ff3366]/20 text-[#ff3366] border border-[#ff3366]">DEFCON 4</span>
+                        </div>
+                    </header>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 flex-grow min-h-0">
+                        <div className="lg:col-span-1 flex flex-col gap-4">
+                            <div className="glass rounded h-1/2 p-2"><RadarChart /></div>
+                            <div className="glass rounded h-1/2 p-4"><MetricsPanel /></div>
+                        </div>
+                        
+                        <div className="lg:col-span-3 glass rounded p-4 h-full border-t-2 border-t-[#ff3366]">
+                            <ThreatLog />
+                        </div>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
