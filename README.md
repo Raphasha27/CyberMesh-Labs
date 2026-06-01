@@ -1,52 +1,54 @@
-# CyberMesh-Labs
-### Production-Grade Enterprise Platform
+# CyberMesh Labs
 
-![License](https://img.shields.io/badge/License-MIT-blue.svg?style=flat-square)
-![Build](https://github.com/Raphasha27/CyberMesh-Labs/actions/workflows/ci.yml/badge.svg?style=flat-square)
-![Stars](https://img.shields.io/github/stars/Raphasha27/CyberMesh-Labs?style=social)
+![JavaScript](https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?logo=javascript)
+![React](https://img.shields.io/badge/React-18-61DAFB?logo=react)
+![Chart.js](https://img.shields.io/badge/Chart.js-4-FF6384?logo=chartdotjs)
+![Tailwind](https://img.shields.io/badge/Tailwind-3-06B6D4?logo=tailwindcss)
+![License](https://img.shields.io/badge/License-MIT-blue)
 
----
+**Autonomous Security Operations Center (SOC) Dashboard** — a real-time cyber threat simulation with live telemetry, threat vector radar analysis, and system integrity monitoring.
 
-## 🚀 Key Features
-- **🧱 Domain-Driven Architecture**: Structured to maximize microservice clarity and separation of concerns.
-- **🛡️ Secure Scaffolding**: Built-in Zero-Trust guidelines, dependency scanners, and security workflows.
-- **⚡ CI/CD Integrated**: Complete linting, code parsing, and building checks configured dynamically.
+> [Live Demo](https://raphasha27.github.io/CyberMesh-Labs/)
 
----
+## Features
 
-## 🏗️ Architecture Design
-- **API Gateways**: Manages client entry interfaces and authentication relays.
-- **Services Layer**: Domain execution logic representing core system requirements.
-- **Persistence DB**: ACID-compliant databasing patterns.
-- **DevOps Core**: Containerized deployment blueprints.
+- **Live Threat Telemetry** — Simulated real-time log feed of security events (DDoS, SQLi, Malware, Port Scans, Unauthorized Auth) with IP addresses and severity levels
+- **Threat Vector Radar** — Interactive Chart.js radar chart visualizing global threat vector activity across 6 categories, updating every 3 seconds
+- **System Metrics** — Packets inspected (1.42B), payloads blocked (84,932), system integrity status
+- **Defcon Status Indicator** — Visual DEFCON level badge
+- **Cyberpunk Aesthetic** — Dark theme, neon green (#00ffcc) accents, CRT scanline overlay, glassmorphism panels, monospace font
 
----
+## Tech Stack
 
-## 🛠️ Technology Stack
-- **Primary Backend**: To be specified
-- **Frontend Layer**: Web UI elements
-- **DevOps Blueprint**: Docker & GitHub Actions CI
+- **React 18** via CDN (UMD production build)
+- **Tailwind CSS 3** via CDN
+- **Chart.js 4** via CDN
+- **Babel Standalone** — JSX transpilation in the browser
 
----
+No build step required — this is a single `index.html` that can be opened directly or served via GitHub Pages.
 
-## 📦 Scaffolding & Setup
+## Usage
 
-1. **Clone the Repository**:
-   ```bash
-   git clone https://github.com/Raphasha27/CyberMesh-Labs.git
-   cd CyberMesh-Labs
-   ```
+```bash
+# Open directly in browser
+open index.html
 
-2. **Configure Environment variables**:
-   ```bash
-   cp .env.example .env
-   ```
+# Or serve locally
+npx serve .
+```
 
-3. **Deploy using Docker**:
-   ```bash
-   docker compose up --build
-   ```
+## Project Structure
 
----
+```
+CyberMesh-Labs/
+├── index.html          # Single-page SOC Dashboard
+├── .env.example
+├── .github/
+│   ├── workflows/      # CI, pages deployment, security scanning
+│   └── dependabot.yml
+└── README.md
+```
 
-© 2026 **Kirov Dynamics Technology** | Developed by **Raphasha27**
+## License
+
+MIT — see [LICENSE](./LICENSE).
