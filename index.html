@@ -3,7 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CyberMesh SOC Dashboard</title>
+    <title>CyberMesh SOC Dashboard | Autonomous Security Operations Center</title>
+    <meta name="description" content="Autonomous Security Operations Center (SOC) dashboard with live threat telemetry, radar analysis, and metrics monitoring. Powered by CyberMesh Labs." />
+    <meta name="robots" content="index, follow" />
+    <meta property="og:title" content="CyberMesh SOC Dashboard" />
+    <meta property="og:description" content="Autonomous Security Operations Center (SOC) dashboard with live threat telemetry, radar analysis, and metrics monitoring." />
+    <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#050505" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
@@ -24,16 +30,21 @@
             top: 0; left: 0; bottom: 0; right: 0;
             background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
             z-index: 50;
-            background-size: 100% 2px, 3px 100%;
             pointer-events: none;
         }
         
         ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-track { background: #000; }
         ::-webkit-scrollbar-thumb { background: #00ffcc; }
+
+        @media (prefers-reduced-motion: reduce) {
+            .animate-pulse { animation: none !important; }
+            .scanlines::before { display: none; }
+        }
     </style>
 </head>
 <body class="h-screen w-screen p-4 flex flex-col scanlines">
+    <a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:p-4 focus:bg-black focus:text-[#00ffcc] focus:z-50">Skip to main content</a>
     <div id="root" class="h-full w-full flex flex-col z-10 relative"></div>
 
     <script type="text/babel">
@@ -75,7 +86,7 @@
                                 <span className="text-gray-500">{log.timestamp}</span>
                                 <span className="text-gray-300">{log.ip}</span>
                                 <span className="text-gray-400 truncate">{log.type}</span>
-                                <span className={	ext-right font-bold  + (log.severity === 'CRITICAL' || log.severity === 'HIGH' ? 'alert-text' : 'text-yellow-400')}>
+                                <span className={"text-right font-bold " + (log.severity === 'CRITICAL' || log.severity === 'HIGH' ? 'alert-text' : 'text-yellow-400')}>
                                     {log.severity}
                                 </span>
                             </div>
